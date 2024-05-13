@@ -127,7 +127,7 @@ export default function MiniDrawer() {
   return (
     <div>
       <CssBaseline />
-      <AppBar position="fixed" open={open}>
+      <AppBar open={open}>
         <Toolbar>
           <IconButton
             color="inherit"
@@ -142,7 +142,7 @@ export default function MiniDrawer() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            Mini variant drawer
+            Money Manager
           </Typography>
         </Toolbar>
       </AppBar>
