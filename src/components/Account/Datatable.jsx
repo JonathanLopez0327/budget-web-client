@@ -20,6 +20,12 @@ import TableHead from "@mui/material/TableHead";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { pink } from "@mui/material/colors";
+import Grid from "@mui/material/Unstable_Grid2";
+import Paper from "@mui/material/Paper";
+import SearchIcon from "@mui/icons-material/Search";
+import FormControl from "@mui/material/FormControl";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import AuthContext from "../../hooks/authContext";
 
 function TablePaginationActions(props) {
   const theme = useTheme();
@@ -112,11 +118,12 @@ const columns = [
   createColumn("actions", "Actions", 0),
 ];
 
-export default function Datatable({ token }) {
+export default function Datatable() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const isRun = useRef(false);
   const [data, setData] = useState(null);
+  const token = React.useContext(AuthContext);
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
@@ -149,80 +156,109 @@ export default function Datatable({ token }) {
   }, []);
 
   return (
-    <TableContainer>
-      <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
-        <TableHead>
-          <TableRow>
-            {columns.map((column) => (
-              <TableCell
-                key={column.id}
-                align={column.align}
-                style={{ minWidth: column.minWidth }}
-              >
-                {column.label}
-              </TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {(rowsPerPage > 0
-            ? data
-              ? data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              : []
-            : data || []
-          ).map((row) => (
-            <TableRow key={row.accountId}>
-              <TableCell component="th" scope="row">
-                {row.accountName}
-              </TableCell>
-              <TableCell style={{ width: 160 }} align="center">
-                {row.accountDescription}
-              </TableCell>
-              <TableCell style={{ width: 160 }} align="center">
-                {row.accountType}
-              </TableCell>
-              <TableCell style={{ width: 160 }} align="center">
-                {row.totalAmount}
-              </TableCell>
-              <TableCell style={{ width: 160 }} align="center">
-                <IconButton aria-label="delete" size="small">
-                  <EditIcon fontSize="inherit" color="primary" />
-                </IconButton>
-                <IconButton aria-label="delete" size="small">
-                  <DeleteIcon fontSize="inherit" sx={{ color: pink[500] }} />
-                </IconButton>
-              </TableCell>
-            </TableRow>
-          ))}
-          {emptyRows > 0 && (
-            <TableRow style={{ height: 53 * emptyRows }}>
-              <TableCell colSpan={6} />
-            </TableRow>
-          )}
-        </TableBody>
-        <TableFooter>
-          <TableRow>
-            <TablePagination
-              rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
-              colSpan={3}
-              count={data ? data.length : 0}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              slotProps={{
-                select: {
-                  inputProps: {
-                    "aria-label": "rows per page",
-                  },
-                  native: true,
-                },
-              }}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-              ActionsComponent={TablePaginationActions}
+    <Paper
+      sx={{ width: { xs: "100%", sm: "90%" }, overflow: "hidden", mt: 4 }}
+      elevation={0}
+    >
+      <Grid container spacing={2}>
+        <Grid xs={6}>
+          <FormControl fullWidth sx={{ m: 1, pt: 2 }} variant="standard">
+            <OutlinedInput
+              id="outlined-search"
+              startAdornment={
+                <SearchIcon
+                  fontSize="small"
+                  sx={{ color: "action.active", mr: 1, my: 0.5 }}
+                />
+              }
+              size="small"
             />
-          </TableRow>
-        </TableFooter>
-      </Table>
-    </TableContainer>
+          </FormControl>
+        </Grid>
+      </Grid>
+
+      <TableContainer>
+        <Table
+          stickyHeader
+          sx={{ minWidth: 400 }}
+          aria-label="custom pagination table"
+        >
+          <TableHead>
+            <TableRow>
+              {columns.map((column) => (
+                <TableCell
+                  key={column.id}
+                  align={column.align}
+                  style={{ minWidth: column.minWidth }}
+                >
+                  {column.label}
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {(rowsPerPage > 0
+              ? data
+                ? data.slice(
+                    page * rowsPerPage,
+                    page * rowsPerPage + rowsPerPage
+                  )
+                : []
+              : data || []
+            ).map((row) => (
+              <TableRow key={row.accountId}>
+                <TableCell component="th" scope="row">
+                  {row.accountName}
+                </TableCell>
+                <TableCell style={{ width: 160 }} align="center">
+                  {row.accountDescription}
+                </TableCell>
+                <TableCell style={{ width: 160 }} align="center">
+                  {row.accountType}
+                </TableCell>
+                <TableCell style={{ width: 160 }} align="center">
+                  {row.totalAmount}
+                </TableCell>
+                <TableCell style={{ width: 160 }} align="center">
+                  <IconButton aria-label="delete" size="small">
+                    <EditIcon fontSize="inherit" color="primary" />
+                  </IconButton>
+                  <IconButton aria-label="delete" size="small">
+                    <DeleteIcon fontSize="inherit" sx={{ color: pink[500] }} />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
+            {emptyRows > 0 && (
+              <TableRow style={{ height: 53 * emptyRows }}>
+                <TableCell colSpan={6} />
+              </TableRow>
+            )}
+          </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
+                colSpan={3}
+                count={data ? data.length : 0}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                slotProps={{
+                  select: {
+                    inputProps: {
+                      "aria-label": "rows per page",
+                    },
+                    native: true,
+                  },
+                }}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                ActionsComponent={TablePaginationActions}
+              />
+            </TableRow>
+          </TableFooter>
+        </Table>
+      </TableContainer>
+    </Paper>
   );
 }

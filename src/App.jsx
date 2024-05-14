@@ -6,27 +6,77 @@ import Account from "./pages/Account/Account";
 import Income from "./pages/Income";
 import Expense from "./pages/Expense";
 import useAuth from "./hooks/useAuth";
-import Home  from "./pages/Home";
+import AuthContext from "./hooks/authContext";
+import Home from "./pages/Home";
 import AccountForm from "./pages/Account/AccountForm";
+import ProtectedRoute from "./pages/Security/ProtectedRoute";
 
 function App() {
-  const [isLogin, token] = useAuth()
+  const [isLogin, token] = useAuth();
+
+  const handleLogin = () => {
+    localStorage.setItem("auth", JSON.stringify({ isAuth: true }));
+  };
 
   return isLogin ? (
-    <Box sx={{ display: "flex" }}>
-      <MiniDrawer />
-
-      <Box component="main" sx={{ flexGrow: 1, p: 4, pt: 8 }}>
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/Account" element={<Account token={token} />} />
-          <Route path="/Income" element={<Income />} />
-          <Route path="/Expense" element={<Expense />} />
-          <Route path="/EditAccounts" element={<AccountForm />} />
-        </Routes>
-      </Box>
-    </Box>
-  ) : <Home />
+    <>
+      {handleLogin()}
+      <AuthContext.Provider value={token}>
+        <Box component="main" sx={{ flexGrow: 1, p: 4, pt: 8 }}>
+          <Routes>
+          <Route
+              path="/Home"
+              element={
+                <Home />
+              }
+            />
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/Account"
+              element={
+                <ProtectedRoute>
+                  <Account />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/Income"
+              element={
+                <ProtectedRoute>
+                  <Income />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/Expense"
+              element={
+                <ProtectedRoute>
+                  <Expense />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/Account/Create"
+              element={
+                <ProtectedRoute>
+                  <AccountForm />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </Box>
+      </AuthContext.Provider>
+    </>
+  ) : (
+    <Home />
+  );
 }
 
 export default App;
