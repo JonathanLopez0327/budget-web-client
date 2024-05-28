@@ -3,13 +3,10 @@ import Datatable from "./Datatable";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import { Link } from "react-router-dom";
-import MiniDrawer from "../app/Drawer";
 import Box from "@mui/material/Box";
 
 function Account() {
   return (
-    <>
-    <MiniDrawer />
     <Box
       component="main"
       display="flex"
@@ -31,7 +28,6 @@ function Account() {
         <Datatable />
       </Box>
     </Box>
-    </>
   );
 }
 
