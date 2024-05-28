@@ -159,15 +159,15 @@ export default function MiniDrawer() {
         <List>
           <ListItemLink to="/" icon={DashboardIcon} primary="Dashboard" />
           <ListItemLink
-            to="/Account"
+            to="/account"
             icon={AccountBalanceWalletIcon}
             primary="Accounts"
           />
-          <ListItemLink to="/Income" icon={AddBoxIcon} primary="Incomes" />
+          <ListItemLink to="/income" icon={AddBoxIcon} primary="Incomes" />
           <ListItemLink
-            to="/Expense"
+            to="/expense"
             icon={IndeterminateCheckBoxIcon}
-            primary="Expenses"
+            primary="expenses"
           />
         </List>
       </Drawer>

@@ -1,8 +1,8 @@
 import * as React from "react";
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from 'react-router-dom';
 import PropTypes from "prop-types";
 import { useTheme } from "@mui/material/styles";
-import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -15,7 +15,6 @@ import FirstPageIcon from "@mui/icons-material/FirstPage";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import LastPageIcon from "@mui/icons-material/LastPage";
-import axios from "axios";
 import TableHead from "@mui/material/TableHead";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -25,7 +24,8 @@ import Paper from "@mui/material/Paper";
 import SearchIcon from "@mui/icons-material/Search";
 import FormControl from "@mui/material/FormControl";
 import OutlinedInput from "@mui/material/OutlinedInput";
-import AuthContext from "../../hooks/authContext";
+import Box from "@mui/material/Box";
+import axios from "axios";
 
 function TablePaginationActions(props) {
   const theme = useTheme();
@@ -123,7 +123,6 @@ export default function Datatable() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const isRun = useRef(false);
   const [data, setData] = useState(null);
-  const token = React.useContext(AuthContext);
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
@@ -138,31 +137,30 @@ export default function Datatable() {
     setPage(0);
   };
 
+  const navigate = useNavigate();
+
+  const handleEditClick = (id) => {
+    navigate(`/account/edit/${id}`);
+  };
+
   // Get Account data from API
   useEffect(() => {
     if (isRun.current) return;
     isRun.current = true;
-
-    const config = {
-      headers: {
-        authorization: `Bearer ${token}`,
-      },
-    };
-
     axios
-      .get("http://localhost:8000/account", config)
+      .get("http://localhost:8000/account")
       .then((res) => setData(res.data))
       .catch((err) => console.error(err));
   }, []);
 
   return (
     <Paper
-      sx={{ width: { xs: "100%", sm: "90%" }, overflow: "hidden", mt: 4 }}
-      elevation={0}
+      sx={{ width: { xs: "100%", sm: "90%" }, p: 6, overflow: "hidden", mt: 4 }}
+      elevation={1}
     >
       <Grid container spacing={2}>
         <Grid xs={6}>
-          <FormControl fullWidth sx={{ m: 1, pt: 2 }} variant="standard">
+          <FormControl sx={{ m: 1, pt: 2 }} variant="standard">
             <OutlinedInput
               id="outlined-search"
               startAdornment={
@@ -220,7 +218,11 @@ export default function Datatable() {
                   {row.totalAmount}
                 </TableCell>
                 <TableCell style={{ width: 160 }} align="center">
-                  <IconButton aria-label="delete" size="small">
+                  <IconButton
+                    aria-label="delete"
+                    size="small"
+                    onClick={() => handleEditClick(row.accountId)}
+                  >
                     <EditIcon fontSize="inherit" color="primary" />
                   </IconButton>
                   <IconButton aria-label="delete" size="small">

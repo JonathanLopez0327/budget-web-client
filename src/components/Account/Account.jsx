@@ -1,10 +1,10 @@
 import React from "react";
-import Box from "@mui/material/Box";
-import Datatable from "../../components/Account/Datatable";
+import Datatable from "./Datatable";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import { Link } from "react-router-dom";
-import MiniDrawer from "../../components/Drawer";
+import MiniDrawer from "../app/Drawer";
+import Box from "@mui/material/Box";
 
 function Account() {
   return (
@@ -20,7 +20,7 @@ function Account() {
       <Box display="flex" justifyContent="flex-end" width="90%">
         <Button variant="contained" startIcon={<AddIcon />}>
           <Link
-            to="/Account/Create"
+            to="/account/create"
             style={{ textDecoration: "none", color: "inherit" }}
           >
             Create
