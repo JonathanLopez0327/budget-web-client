@@ -1,22 +1,16 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { ProtectedRoute } from "./ProtectedRoute";
-import Home from "../home/Home";
-import Dashboard from "../dashboard/Dashboard";
-import Account from "../account/Account";
-import Income from "../income/Income";
-import Expense from "../expense/Expense";
-import Form from "../account/Form";
+import React, { Suspense, lazy } from "react";
+
+const Dashboard = lazy(() => import("../dashboard/Dashboard"));
+const Account = lazy(() => import("../account/Account"));
+const Income = lazy(() => import("../income/Income"));
+const Expense = lazy(() => import("../expense/Expense"));
+const Form = lazy(() => import("../account/Form"));
 
 const Routes = () => {
   const { token } = useAuth();
-
-  // const routesForPublic = [
-  //   {
-  //     path: "/Home",
-  //     element: <Home />,
-  //   },
-  // ];
 
   const routesForAuthenticatedOnly = [
     {
@@ -60,10 +54,14 @@ const Routes = () => {
 
   const router = createBrowserRouter([
     ...(!token ? routesForNotAuthenticatedOnly : []),
-    ...routesForAuthenticatedOnly
+    ...routesForAuthenticatedOnly,
   ]);
 
-  return <RouterProvider router={router} />;
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <RouterProvider router={router} />
+    </Suspense>
+  );
 };
 
 export default Routes;

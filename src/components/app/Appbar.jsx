@@ -7,7 +7,6 @@ import Divider from "@mui/material/Divider";
 import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
 import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -20,6 +19,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Collapse from "@mui/material/Collapse";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
+import Avatar from "@mui/material/Avatar";
 
 const drawerWidth = 240;
 
@@ -48,6 +48,9 @@ function DrawerAppBar(props) {
   const drawer = (
     // onClick={handleDrawerToggle}
     <Box sx={{ textAlign: "center" }}>
+      <IconButton sx={{ p: 1 }}>
+        <Avatar alt="Remy Sharp" src="/src/assets/logo.png" />
+      </IconButton>
       <Typography variant="h6" sx={{ my: 2 }}>
         Money Manager App
       </Typography>
@@ -66,24 +69,32 @@ function DrawerAppBar(props) {
 
         <Collapse in={collapseOpen} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
-            <Link to="/account" style={{ textDecoration: "none", color: "inherit" }}>
+            <Link
+              to="/account"
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
               <ListItemButton onClick={handleDrawerToggle}>
                 <ListItemText primary="Accounts" />
               </ListItemButton>
             </Link>
 
-            <Link to="/income" style={{ textDecoration: "none", color: "inherit" }}>
+            <Link
+              to="/income"
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
               <ListItemButton onClick={handleDrawerToggle}>
                 <ListItemText primary="Incomes" />
               </ListItemButton>
             </Link>
 
-            <Link to="/expense" style={{ textDecoration: "none", color: "inherit" }}>
+            <Link
+              to="/expense"
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
               <ListItemButton onClick={handleDrawerToggle}>
                 <ListItemText primary="Expenses" />
               </ListItemButton>
             </Link>
-            
           </List>
         </Collapse>
       </List>
@@ -107,9 +118,12 @@ function DrawerAppBar(props) {
           >
             <MenuIcon />
           </IconButton>
+          <IconButton sx={{ p: 1 }}>
+            <Avatar alt="Remy Sharp" src="/src/assets/logo.png" />
+          </IconButton>
           <Typography
-            variant="h6"
             component="div"
+            variant="h6"
             sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
           >
             Money Manager App
@@ -140,21 +154,21 @@ function DrawerAppBar(props) {
                 to="/account"
                 style={{ textDecoration: "none", color: "inherit" }}
               >
-                <MenuItem>Accounts</MenuItem>
+                <MenuItem onClick={handleClose}>Accounts</MenuItem>
               </Link>
 
               <Link
                 to="/income"
                 style={{ textDecoration: "none", color: "inherit" }}
               >
-                <MenuItem>Incomes</MenuItem>
+                <MenuItem onClick={handleClose}>Incomes</MenuItem>
               </Link>
 
               <Link
                 to="/expense"
                 style={{ textDecoration: "none", color: "inherit" }}
               >
-                <MenuItem>Expenses</MenuItem>
+                <MenuItem onClick={handleClose}>Expenses</MenuItem>
               </Link>
             </Menu>
           </Box>
