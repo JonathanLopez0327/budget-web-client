@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import { useTheme } from "@mui/material/styles";
 import Table from "@mui/material/Table";
@@ -26,6 +26,8 @@ import FormControl from "@mui/material/FormControl";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import Box from "@mui/material/Box";
 import axios from "axios";
+import { DialogComponent } from "../app/Dialog";
+import { CustomizedSnackbars } from "../app/Snackbar";
 
 function TablePaginationActions(props) {
   const theme = useTheme();
@@ -123,6 +125,12 @@ export default function Datatable() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const isRun = useRef(false);
   const [data, setData] = useState(null);
+  const [dialog, setDialog] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
+  const [alert, setAlert] = useState(false);
+  const [message, setMessage] = useState("");
+  const [severity, setSeverity] = useState("");
+  const [searchValue, setSearchValue] = useState("");
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
@@ -143,7 +151,12 @@ export default function Datatable() {
     navigate(`/account/edit/${id}`);
   };
 
-  // Get Account data from API
+  // SEARCH
+  const handleSearchChange = (event) => {
+    setSearchValue(event.target.value);
+  };
+
+  // GET
   useEffect(() => {
     if (isRun.current) return;
     isRun.current = true;
@@ -152,6 +165,42 @@ export default function Datatable() {
       .then((res) => setData(res.data))
       .catch((err) => console.error(err));
   }, []);
+
+  // DELETE
+  const handleDelete = () => {
+    axios
+      .delete(`http://localhost:8000/account/${deleteId}`)
+      .then((res) => {
+        // Actualiza los datos en el estado después de eliminar el registro
+        setData(data.filter((record) => record.accountId !== deleteId));
+        // Cierra el diálogo
+        setDialog(false);
+
+        setMessage("The account has been successfully deleted.");
+        setSeverity("primary");
+        setAlert(true);
+      })
+      .catch((err) => console.error(err));
+  };
+
+  // Dialog
+  const handleClickOpen = (id) => {
+    setDeleteId(id);
+    setDialog(true);
+  };
+
+  const handleClose = () => {
+    setDialog(false);
+  };
+
+  // Snackbar
+  const handleBreadClose = () => {
+    setAlert(false);
+  };
+
+  const filteredData = data 
+  ? data.filter(item => item.accountName.toLowerCase().includes(searchValue.toLowerCase()))
+  : [];
 
   return (
     <Paper
@@ -162,7 +211,7 @@ export default function Datatable() {
         <Grid xs={6}>
           <FormControl sx={{ m: 1, pt: 2 }} variant="standard">
             <OutlinedInput
-              id="outlined-search"
+              id="search"
               startAdornment={
                 <SearchIcon
                   fontSize="small"
@@ -170,6 +219,8 @@ export default function Datatable() {
                 />
               }
               size="small"
+              value={searchValue} // establece el valor del input al valor de búsqueda
+              onChange={handleSearchChange} // maneja el cambio en el valor del input
             />
           </FormControl>
         </Grid>
@@ -196,13 +247,13 @@ export default function Datatable() {
           </TableHead>
           <TableBody>
             {(rowsPerPage > 0
-              ? data
-                ? data.slice(
+              ? filteredData
+                ? filteredData.slice(
                     page * rowsPerPage,
                     page * rowsPerPage + rowsPerPage
                   )
                 : []
-              : data || []
+              : filteredData || []
             ).map((row) => (
               <TableRow key={row.accountId}>
                 <TableCell component="th" scope="row">
@@ -225,7 +276,11 @@ export default function Datatable() {
                   >
                     <EditIcon fontSize="inherit" color="primary" />
                   </IconButton>
-                  <IconButton aria-label="delete" size="small">
+                  <IconButton
+                    aria-label="delete"
+                    size="small"
+                    onClick={() => handleClickOpen(row.accountId)}
+                  >
                     <DeleteIcon fontSize="inherit" sx={{ color: pink[500] }} />
                   </IconButton>
                 </TableCell>
@@ -261,6 +316,18 @@ export default function Datatable() {
           </TableFooter>
         </Table>
       </TableContainer>
+      <DialogComponent
+        dialog={dialog}
+        handleClose={handleClose}
+        handleDelete={handleDelete}
+        title={"Are you sure you want to delete this account?"}
+      />
+      <CustomizedSnackbars
+        open={alert}
+        message={message}
+        severity={severity}
+        handleBreadClose={handleBreadClose}
+      />
     </Paper>
   );
 }
