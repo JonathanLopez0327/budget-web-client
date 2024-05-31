@@ -2,12 +2,14 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { ProtectedRoute } from "./ProtectedRoute";
 import React, { Suspense, lazy } from "react";
+import SimpleLoader from "../app/Loader";
 
 const Dashboard = lazy(() => import("../dashboard/Dashboard"));
 const Account = lazy(() => import("../account/Account"));
-const Income = lazy(() => import("../income/Income"));
-const Expense = lazy(() => import("../expense/Expense"));
 const Form = lazy(() => import("../account/Form"));
+const Income = lazy(() => import("../income/Income"));
+const IncomeForm = lazy(() => import("../income/IncomeForm"));
+const Expense = lazy(() => import("../expense/Expense"));
 
 const Routes = () => {
   const { token } = useAuth();
@@ -24,6 +26,14 @@ const Routes = () => {
         {
           path: "/income",
           element: <Income />,
+        },
+        {
+          path: "/income/create",
+          element: <IncomeForm />,
+        },
+        {
+          path: "/income/edit/:id",
+          element: <Dashboard />,
         },
         {
           path: "/expense",
@@ -58,7 +68,7 @@ const Routes = () => {
   ]);
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<SimpleLoader />}>
       <RouterProvider router={router} />
     </Suspense>
   );

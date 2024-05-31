@@ -29,7 +29,6 @@ const StyledBreadcrumb = styled(Chip)(({ theme }) => {
 
 function handleBreadClick(event) {
   event.preventDefault();
-  console.info("You clicked a breadcrumb.");
 }
 
 export const BreadcrumbForm = () => (

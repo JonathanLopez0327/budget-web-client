@@ -132,9 +132,11 @@ function DrawerAppBar(props) {
             <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
               <Button sx={{ color: "#fff" }}>Dashboard</Button>
             </Link>
+
             <Button sx={{ color: "#fff" }} onClick={handleMenu}>
               Tracking
             </Button>
+
             <Menu
               id="menu-appbar"
               anchorEl={anchorEl}
@@ -150,26 +152,35 @@ function DrawerAppBar(props) {
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
-              <Link
-                to="/account"
-                style={{ textDecoration: "none", color: "inherit" }}
-              >
-                <MenuItem onClick={handleClose}>Accounts</MenuItem>
-              </Link>
+              <MenuItem>
+                <Link
+                  onClick={handleClose}
+                  to="/account"
+                  style={{ textDecoration: "none", color: "inherit" }}
+                >
+                  Accounts
+                </Link>
+              </MenuItem>
 
-              <Link
-                to="/income"
-                style={{ textDecoration: "none", color: "inherit" }}
-              >
-                <MenuItem onClick={handleClose}>Incomes</MenuItem>
-              </Link>
+              <MenuItem>
+                <Link
+                  onClick={handleClose}
+                  to="/income"
+                  style={{ textDecoration: "none", color: "inherit" }}
+                >
+                  Incomes
+                </Link>
+              </MenuItem>
 
-              <Link
-                to="/expense"
-                style={{ textDecoration: "none", color: "inherit" }}
-              >
-                <MenuItem onClick={handleClose}>Expenses</MenuItem>
-              </Link>
+              <MenuItem>
+                <Link
+                  onClick={handleClose}
+                  to="/expense"
+                  style={{ textDecoration: "none", color: "inherit" }}
+                >
+                  Expenses
+                </Link>
+              </MenuItem>
             </Menu>
           </Box>
         </Toolbar>
