@@ -13,6 +13,7 @@ import Button from "@mui/material/Button";
 import { IncomeBreadcrumb } from "./IncomeBreadcrumbs";
 import { CustomizedSnackbars } from "../app/Snackbar";
 import { useParams, useNavigate } from "react-router-dom";
+import DrawerAppBar from "../app/Appbar";
 
 function IncomeForm() {
   const [incomeCategory, setIncomeCategory] = useState("");
@@ -123,7 +124,9 @@ function IncomeForm() {
         incomeAmount,
       });
 
-      setMessage(`Income ${incomeDescription} ${id ? "modified" : "created"} correctly`);
+      setMessage(
+        `Income ${incomeDescription} ${id ? "modified" : "created"} correctly`
+      );
       setSeverity("success");
       setOpen(true);
       clearInputs();
@@ -135,7 +138,11 @@ function IncomeForm() {
   };
 
   return (
-    <Box
+    <React.Fragment>
+
+      <DrawerAppBar />
+
+      <Box
       component="main"
       display="flex"
       flexDirection="column"
@@ -178,7 +185,27 @@ function IncomeForm() {
                 >
                   <MenuItem value={"LINEAR_INCOME"}>LINEAR</MenuItem>
                   <MenuItem value={"PASSIVE_INCOME"}>PASSIVE</MenuItem>
+                  <MenuItem value={"DIFFERENCE"}>DIFFERENCE</MenuItem>
                   <MenuItem value={"OTHERS"}>OTHERS</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel id="account-select-label">Account Name</InputLabel>
+                <Select
+                  labelId="account-select-label"
+                  id="account-id"
+                  value={selectedAccount}
+                  label="Account Name"
+                  onChange={handleAccountChange}
+                >
+                  {accounts.map((account) => (
+                    <MenuItem key={account.accountId} value={account.accountId}>
+                      {account.accountName}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </Grid>
@@ -198,25 +225,6 @@ function IncomeForm() {
 
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth>
-                <InputLabel id="account-select-label">Account</InputLabel>
-                <Select
-                  labelId="account-select-label"
-                  id="account-id"
-                  value={selectedAccount}
-                  label="Account"
-                  onChange={handleAccountChange}
-                >
-                  {accounts.map((account) => (
-                    <MenuItem key={account.accountId} value={account.accountId}>
-                      {account.accountName}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
-              <FormControl fullWidth>
                 <TextField
                   required
                   id="income-amount"
@@ -229,15 +237,17 @@ function IncomeForm() {
             </Grid>
 
             <Grid item xs={12} sm={6}>
-              <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
+              <Grid container spacing={2} direction="row">
+                <Grid item xs={3}>
                   <Button
                     variant="contained"
-                    style={{ marginRight: "10px" }}
+                    style={{ marginRight: "2px" }}
                     onClick={handleSubmit}
                   >
                     {id ? "Update" : "Save"}
                   </Button>
+                </Grid>
+                <Grid item xs={6}>
                   <Button
                     variant="contained"
                     color="error"
@@ -252,6 +262,7 @@ function IncomeForm() {
         </Paper>
       </Box>
     </Box>
+    </React.Fragment>
   );
 }
 

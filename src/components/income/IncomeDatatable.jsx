@@ -150,7 +150,7 @@ export default function IncomeDatatable() {
   const navigate = useNavigate();
 
   const handleEditClick = (id) => {
-    navigate(`/account/edit/${id}`);
+    navigate(`/income/edit/${id}`);
   };
 
   // SEARCH
@@ -275,10 +275,18 @@ export default function IncomeDatatable() {
                   {row.incomePeriod}
                 </TableCell>
                 <TableCell style={{ width: 160 }} align="center">
-                  <IconButton aria-label="delete" size="small">
+                  <IconButton
+                    aria-label="delete"
+                    size="small"
+                    onClick={() => handleEditClick(row.incomeId)}
+                  >
                     <EditIcon fontSize="inherit" color="primary" />
                   </IconButton>
-                  <IconButton aria-label="delete" size="small">
+                  <IconButton
+                    aria-label="delete"
+                    size="small"
+                    onClick={() => handleClickOpen(row.incomeId)}
+                  >
                     <DeleteIcon fontSize="inherit" sx={{ color: pink[500] }} />
                   </IconButton>
                 </TableCell>
@@ -318,7 +326,7 @@ export default function IncomeDatatable() {
         dialog={dialog}
         handleClose={handleClose}
         handleDelete={handleDelete}
-        title={"Are you sure you want to delete this account?"}
+        title={"Are you sure you want to delete this income?"}
       />
       <CustomizedSnackbars
         open={alert}

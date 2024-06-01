@@ -4,10 +4,13 @@ import { Link } from "react-router-dom";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import IncomeDatatable from "./IncomeDatatable";
+import DrawerAppBar from "../app/Appbar";
 
 function Income() {
   return (
-    <Box
+    <React.Fragment>
+      <DrawerAppBar />
+      <Box
       component="main"
       display="flex"
       flexDirection="column"
@@ -28,6 +31,7 @@ function Income() {
         <IncomeDatatable />
       </Box>
     </Box>
+    </React.Fragment>
   );
 }
 

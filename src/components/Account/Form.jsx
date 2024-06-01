@@ -13,6 +13,7 @@ import Button from "@mui/material/Button";
 import { BreadcrumbForm } from "./Breadcrumbs";
 import { CustomizedSnackbars } from "../app/Snackbar";
 import { useParams, useNavigate } from "react-router-dom";
+import DrawerAppBar from "../app/Appbar";
 
 function Form() {
   const [accountName, setAccountName] = useState("");
@@ -110,7 +111,9 @@ function Form() {
   };
 
   return (
-    <Box
+    <React.Fragment>
+      <DrawerAppBar />
+      <Box
       component="main"
       display="flex"
       flexDirection="column"
@@ -227,6 +230,7 @@ function Form() {
         </Paper>
       </Box>
     </Box>
+    </React.Fragment>
   );
 }
 

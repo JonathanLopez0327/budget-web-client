@@ -33,7 +33,7 @@ const Routes = () => {
         },
         {
           path: "/income/edit/:id",
-          element: <Dashboard />,
+          element: <IncomeForm />,
         },
         {
           path: "/expense",

@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -20,29 +21,32 @@ import Collapse from "@mui/material/Collapse";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import Avatar from "@mui/material/Avatar";
+import MenuComponent from "./Menu";
 
 const drawerWidth = 240;
 
 function DrawerAppBar(props) {
   const { window } = props;
-  const [mobileOpen, setMobileOpen] = React.useState(false);
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [collapseOpen, setCollapseOpen] = React.useState(true);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [collapseOpen, setCollapseOpen] = useState(true);
 
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
   };
 
-  const handleMenu = (event) => {
+  const handleCollapseClick = () => {
+    setCollapseOpen(!collapseOpen);
+  };
+
+  const open = Boolean(anchorEl);
+
+  const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
   const handleClose = () => {
     setAnchorEl(null);
-  };
-
-  const handleCollapseClick = () => {
-    setCollapseOpen(!collapseOpen);
   };
 
   const drawer = (
@@ -133,55 +137,17 @@ function DrawerAppBar(props) {
               <Button sx={{ color: "#fff" }}>Dashboard</Button>
             </Link>
 
-            <Button sx={{ color: "#fff" }} onClick={handleMenu}>
-              Tracking
-            </Button>
-
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorEl}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={Boolean(anchorEl)}
-              onClose={handleClose}
+            <Button
+              id="basic-button"
+              aria-controls={open ? "basic-menu" : undefined}
+              aria-haspopup="true"
+              aria-expanded={open ? "true" : undefined}
+              onClick={handleClick}
+              sx={{ color: "#fff" }}
             >
-              <MenuItem>
-                <Link
-                  onClick={handleClose}
-                  to="/account"
-                  style={{ textDecoration: "none", color: "inherit" }}
-                >
-                  Accounts
-                </Link>
-              </MenuItem>
-
-              <MenuItem>
-                <Link
-                  onClick={handleClose}
-                  to="/income"
-                  style={{ textDecoration: "none", color: "inherit" }}
-                >
-                  Incomes
-                </Link>
-              </MenuItem>
-
-              <MenuItem>
-                <Link
-                  onClick={handleClose}
-                  to="/expense"
-                  style={{ textDecoration: "none", color: "inherit" }}
-                >
-                  Expenses
-                </Link>
-              </MenuItem>
-            </Menu>
+              Tracking Options
+            </Button>
+            <MenuComponent open={open} handleClose={handleClose} anchorEl={anchorEl} />
           </Box>
         </Toolbar>
       </AppBar>

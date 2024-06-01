@@ -24,9 +24,9 @@ export const ProtectedRoute = () => {
   }
   // If authenticated, render the child routes
   return (
-    <>
-      <DrawerAppBar />
+    <React.Fragment>
+      {/* <DrawerAppBar /> */}
       <Outlet />
-    </>
+    </React.Fragment>
   );
 };
