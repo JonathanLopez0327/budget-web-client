@@ -2,7 +2,7 @@ import React from "react";
 import Box from "@mui/material/Box";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 import { emphasize, styled } from "@mui/material/styles";
-import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import PaidIcon from '@mui/icons-material/Paid';
 import AddIcon from "@mui/icons-material/Add";
 import Chip from "@mui/material/Chip";
 import { Link } from "react-router-dom";
@@ -31,23 +31,23 @@ function handleBreadClick(event) {
   event.preventDefault();
 }
 
-export const BreadcrumbForm = () => (
+export const IncomeBreadcrumb = () => (
   <Box display="flex" justifyContent="center" width="100%">
     {/* Links zone */}
     <div role="presentation" onClick={handleBreadClick}>
       <Breadcrumbs aria-label="breadcrumb">
         <Link
-          to="/account"
+          to="/income"
           style={{ textDecoration: "none", color: "inherit" }}
         >
           {" "}
           <StyledBreadcrumb
-            label="Accounts"
-            icon={<AccountBalanceWalletIcon fontSize="small" />}
+            label="Incomes"
+            icon={<PaidIcon fontSize="small" />}
           />
         </Link>
         <StyledBreadcrumb
-          label="Nueva Cuenta"
+          label="New Income"
           icon={<AddIcon fontSize="small" />}
         />
       </Breadcrumbs>

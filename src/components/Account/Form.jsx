@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import * as React from "react";
 import axios from "axios";
 import Box from "@mui/material/Box";
@@ -12,6 +12,8 @@ import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import { BreadcrumbForm } from "./Breadcrumbs";
 import { CustomizedSnackbars } from "../app/Snackbar";
+import { useParams, useNavigate } from "react-router-dom";
+import DrawerAppBar from "../app/Appbar";
 
 function Form() {
   const [accountName, setAccountName] = useState("");
@@ -21,6 +23,9 @@ function Form() {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [severity, setSeverity] = useState("");
+  const { id } = useParams(); // Obtiene el ID de la URL
+  const navigate = useNavigate();
+  const apiURL = import.meta.env.VITE_ACCOUNT_URL
 
   const handleAccountNameChange = (event) => {
     setAccountName(event.target.value);
@@ -42,45 +47,73 @@ function Form() {
     setOpen(false);
   };
 
+  const handleClose = () => {
+    navigate("/account");
+  }
+
   const clearInputs = () => {
     setAccountName("");
     setAccountDescription("");
     setAccountType("");
-    setTotalAmount("");
+    setTotalAmount(0);
   };
 
+  /**
+   * Si hay un ID en la URL, estamos en la página de edición
+   */
+  useEffect(() => {
+    if (id) {
+      axios
+        .get(`${apiURL}/${id}`)
+        .then((response) => {
+          setAccountName(response.data.accountName);
+          setAccountDescription(response.data.accountDescription);
+          setAccountType(response.data.accountType);
+          setTotalAmount(response.data.totalAmount);
+        })
+        .catch((error) => {
+          setMessage("Error al obtener los detalles de la cuenta");
+          setSeverity("error");
+          setOpen(true);
+        });
+    }
+  }, [id]);
+  
   const handleSubmit = async (event) => {
     event.preventDefault();
-    // Verifica si algún campo está vacío
     if (!accountName || !accountDescription || !accountType || !totalAmount) {
       setMessage("Todos los campos son obligatorios");
       setSeverity("error");
       setOpen(true);
       return;
     }
-
+  
     try {
-      const response = await axios.post("http://localhost:8000/account", {
-        accountName: accountName,
-        accountDescription: accountDescription,
-        accountType: accountType,
-        totalAmount: totalAmount,
+      const method = id ? axios.put : axios.post;
+      const url = id ? `${apiURL}/${id}` : apiURL;
+  
+      await method(url, {
+        accountName,
+        accountDescription,
+        accountType,
+        totalAmount,
       });
-
-      setMessage("Cuenta " + accountName + " creada correctamente");
+  
+      setMessage(`Cuenta ${accountName} ${id ? "modificada" : "creada"} correctamente`);
       setSeverity("success");
       setOpen(true);
-
       clearInputs();
     } catch (error) {
-      setMessage("Error al crear la cuenta:" + error);
+      setMessage("Error al enviar el formulario");
       setSeverity("error");
       setOpen(true);
     }
   };
 
   return (
-    <Box
+    <React.Fragment>
+      <DrawerAppBar />
+      <Box
       component="main"
       display="flex"
       flexDirection="column"
@@ -118,6 +151,7 @@ function Form() {
                   id="account-name"
                   label="Name"
                   placeholder="BHD"
+                  value={accountName}
                   onChange={handleAccountNameChange}
                 />
               </FormControl>
@@ -130,6 +164,7 @@ function Form() {
                   id="account-description"
                   label="Description"
                   placeholder="Account for BHD"
+                  value={accountDescription}
                   onChange={handleAccountDescriptionChange}
                 />
               </FormControl>
@@ -164,8 +199,8 @@ function Form() {
                   required
                   id="amount"
                   label="Amount"
-                  defaultValue="0"
                   type="number"
+                  value={totalAmount}
                   onChange={handleTotalAmountChange}
                 />
               </FormControl>
@@ -179,9 +214,13 @@ function Form() {
                     style={{ marginRight: "10px" }}
                     onClick={handleSubmit}
                   >
-                    Save
+                    {id ? "Update" : "Save"}
                   </Button>
-                  <Button variant="contained" color="error">
+                  <Button
+                    variant="contained"
+                    color="error"
+                    onClick={handleClose}
+                  >
                     Cancel
                   </Button>
                 </Grid>
@@ -191,6 +230,7 @@ function Form() {
         </Paper>
       </Box>
     </Box>
+    </React.Fragment>
   );
 }
 

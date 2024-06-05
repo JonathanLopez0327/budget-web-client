@@ -4,10 +4,13 @@ import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import { Link } from "react-router-dom";
 import Box from "@mui/material/Box";
+import DrawerAppBar from "../app/Appbar";
 
 function Account() {
   return (
-    <Box
+    <React.Fragment>
+      <DrawerAppBar />
+      <Box
       component="main"
       display="flex"
       flexDirection="column"
@@ -28,6 +31,7 @@ function Account() {
         <Datatable />
       </Box>
     </Box>
+    </React.Fragment>
   );
 }
 

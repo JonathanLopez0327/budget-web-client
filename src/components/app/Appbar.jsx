@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -7,7 +8,6 @@ import Divider from "@mui/material/Divider";
 import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
 import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -20,20 +20,28 @@ import MenuItem from "@mui/material/MenuItem";
 import Collapse from "@mui/material/Collapse";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
+import Avatar from "@mui/material/Avatar";
+import MenuComponent from "./Menu";
 
 const drawerWidth = 240;
 
 function DrawerAppBar(props) {
   const { window } = props;
-  const [mobileOpen, setMobileOpen] = React.useState(false);
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [collapseOpen, setCollapseOpen] = React.useState(true);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [collapseOpen, setCollapseOpen] = useState(true);
 
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
   };
 
-  const handleMenu = (event) => {
+  const handleCollapseClick = () => {
+    setCollapseOpen(!collapseOpen);
+  };
+
+  const open = Boolean(anchorEl);
+
+  const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -41,13 +49,12 @@ function DrawerAppBar(props) {
     setAnchorEl(null);
   };
 
-  const handleCollapseClick = () => {
-    setCollapseOpen(!collapseOpen);
-  };
-
   const drawer = (
     // onClick={handleDrawerToggle}
     <Box sx={{ textAlign: "center" }}>
+      <IconButton sx={{ p: 1 }}>
+        <Avatar alt="Remy Sharp" src="/src/assets/logo.png" />
+      </IconButton>
       <Typography variant="h6" sx={{ my: 2 }}>
         Money Manager App
       </Typography>
@@ -66,24 +73,32 @@ function DrawerAppBar(props) {
 
         <Collapse in={collapseOpen} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
-            <Link to="/account" style={{ textDecoration: "none", color: "inherit" }}>
+            <Link
+              to="/account"
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
               <ListItemButton onClick={handleDrawerToggle}>
                 <ListItemText primary="Accounts" />
               </ListItemButton>
             </Link>
 
-            <Link to="/income" style={{ textDecoration: "none", color: "inherit" }}>
+            <Link
+              to="/income"
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
               <ListItemButton onClick={handleDrawerToggle}>
                 <ListItemText primary="Incomes" />
               </ListItemButton>
             </Link>
 
-            <Link to="/expense" style={{ textDecoration: "none", color: "inherit" }}>
+            <Link
+              to="/expense"
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
               <ListItemButton onClick={handleDrawerToggle}>
                 <ListItemText primary="Expenses" />
               </ListItemButton>
             </Link>
-            
           </List>
         </Collapse>
       </List>
@@ -107,9 +122,12 @@ function DrawerAppBar(props) {
           >
             <MenuIcon />
           </IconButton>
+          <IconButton sx={{ p: 1 }}>
+            <Avatar alt="Remy Sharp" src="/src/assets/logo.png" />
+          </IconButton>
           <Typography
-            variant="h6"
             component="div"
+            variant="h6"
             sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
           >
             Money Manager App
@@ -118,45 +136,18 @@ function DrawerAppBar(props) {
             <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
               <Button sx={{ color: "#fff" }}>Dashboard</Button>
             </Link>
-            <Button sx={{ color: "#fff" }} onClick={handleMenu}>
-              Tracking
-            </Button>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorEl}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={Boolean(anchorEl)}
-              onClose={handleClose}
+
+            <Button
+              id="basic-button"
+              aria-controls={open ? "basic-menu" : undefined}
+              aria-haspopup="true"
+              aria-expanded={open ? "true" : undefined}
+              onClick={handleClick}
+              sx={{ color: "#fff" }}
             >
-              <Link
-                to="/account"
-                style={{ textDecoration: "none", color: "inherit" }}
-              >
-                <MenuItem>Accounts</MenuItem>
-              </Link>
-
-              <Link
-                to="/income"
-                style={{ textDecoration: "none", color: "inherit" }}
-              >
-                <MenuItem>Incomes</MenuItem>
-              </Link>
-
-              <Link
-                to="/expense"
-                style={{ textDecoration: "none", color: "inherit" }}
-              >
-                <MenuItem>Expenses</MenuItem>
-              </Link>
-            </Menu>
+              Tracking Options
+            </Button>
+            <MenuComponent open={open} handleClose={handleClose} anchorEl={anchorEl} />
           </Box>
         </Toolbar>
       </AppBar>

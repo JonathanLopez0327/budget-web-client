@@ -113,14 +113,14 @@ const createColumn = (
 });
 
 const columns = [
-  createColumn("accountName", "Account Name", 160),
-  createColumn("accountDescription", "Account Description", 160),
-  createColumn("accountType", "Account Type", 160),
-  createColumn("totalAmount", "Total Amount", 160),
+  createColumn("incomeCategory", "Category", 160),
+  createColumn("incomeDescription", "Description", 160),
+  createColumn("incomeAmount", "Amount", 160),
+  createColumn("incomePeriod", "Period", 160),
   createColumn("actions", "Actions", 0),
 ];
 
-export default function Datatable() {
+export default function IncomeDatatable() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const isRun = useRef(false);
@@ -131,6 +131,8 @@ export default function Datatable() {
   const [message, setMessage] = useState("");
   const [severity, setSeverity] = useState("");
   const [searchValue, setSearchValue] = useState("");
+
+  const apiURL = import.meta.env.VITE_INCOME_URL;
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
@@ -148,7 +150,7 @@ export default function Datatable() {
   const navigate = useNavigate();
 
   const handleEditClick = (id) => {
-    navigate(`/account/edit/${id}`);
+    navigate(`/income/edit/${id}`);
   };
 
   // SEARCH
@@ -161,7 +163,7 @@ export default function Datatable() {
     if (isRun.current) return;
     isRun.current = true;
     axios
-      .get("http://localhost:8000/account")
+      .get(`${apiURL}`)
       .then((res) => setData(res.data))
       .catch((err) => console.error(err));
   }, []);
@@ -169,14 +171,14 @@ export default function Datatable() {
   // DELETE
   const handleDelete = () => {
     axios
-      .delete(`http://localhost:8000/account/${deleteId}`)
+      .delete(`${apiURL}/${deleteId}`)
       .then((res) => {
         // Actualiza los datos en el estado después de eliminar el registro
-        setData(data.filter((record) => record.accountId !== deleteId));
+        setData(data.filter((record) => record.incomeId !== deleteId));
         // Cierra el diálogo
         setDialog(false);
 
-        setMessage("The account has been successfully deleted.");
+        setMessage("The income has been successfully deleted.");
         setSeverity("primary");
         setAlert(true);
       })
@@ -198,9 +200,13 @@ export default function Datatable() {
     setAlert(false);
   };
 
-  const filteredData = data 
-  ? data.filter(item => item.accountName.toLowerCase().includes(searchValue.toLowerCase()))
-  : [];
+  const filteredData = data
+    ? data.filter((item) =>
+        Object.values(item).some((value) =>
+          value.toString().toLowerCase().includes(searchValue.toLowerCase())
+        )
+      )
+    : [];
 
   return (
     <Paper
@@ -255,31 +261,31 @@ export default function Datatable() {
                 : []
               : filteredData || []
             ).map((row) => (
-              <TableRow key={row.accountId}>
+              <TableRow key={row.incomeId}>
                 <TableCell component="th" scope="row">
-                  {row.accountName}
+                  {row.incomeCategory}
                 </TableCell>
                 <TableCell style={{ width: 160 }} align="center">
-                  {row.accountDescription}
+                  {row.incomeDescription}
                 </TableCell>
                 <TableCell style={{ width: 160 }} align="center">
-                  {row.accountType}
+                  {row.incomeAmount}
                 </TableCell>
                 <TableCell style={{ width: 160 }} align="center">
-                  {row.totalAmount}
+                  {row.incomePeriod}
                 </TableCell>
                 <TableCell style={{ width: 160 }} align="center">
                   <IconButton
                     aria-label="delete"
                     size="small"
-                    onClick={() => handleEditClick(row.accountId)}
+                    onClick={() => handleEditClick(row.incomeId)}
                   >
                     <EditIcon fontSize="inherit" color="primary" />
                   </IconButton>
                   <IconButton
                     aria-label="delete"
                     size="small"
-                    onClick={() => handleClickOpen(row.accountId)}
+                    onClick={() => handleClickOpen(row.incomeId)}
                   >
                     <DeleteIcon fontSize="inherit" sx={{ color: pink[500] }} />
                   </IconButton>
@@ -320,7 +326,7 @@ export default function Datatable() {
         dialog={dialog}
         handleClose={handleClose}
         handleDelete={handleDelete}
-        title={"Are you sure you want to delete this account?"}
+        title={"Are you sure you want to delete this income?"}
       />
       <CustomizedSnackbars
         open={alert}

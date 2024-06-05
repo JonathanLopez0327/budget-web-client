@@ -8,6 +8,7 @@ import React, {
 } from "react";
 import Keycloak from "keycloak-js";
 import axios from "axios";
+import DrawerAppBar from "../components/app/Appbar";
 
 const client = new Keycloak({
   url: import.meta.env.VITE_KEYCLOAK_URL,
@@ -24,7 +25,8 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     if (isRun.current) return;
     isRun.current = true;
-    client.init({ onLoad: "login-required" })
+    client
+      .init({ onLoad: "login-required" })
       .then((authenticated) => {
         if (authenticated) {
           setToken(client.token);
@@ -55,7 +57,9 @@ const AuthProvider = ({ children }) => {
   );
 
   return (
-    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={contextValue}>
+      {children}
+    </AuthContext.Provider>
   );
 };
 
